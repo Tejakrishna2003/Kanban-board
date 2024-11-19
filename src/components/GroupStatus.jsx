@@ -6,7 +6,12 @@ import CustomAddButton from "./Button";
 import FeatureRequest from "./FeatureRequest";
 import ProfileIcon from "./UserIcon";
 
-const CustomTicketCard = ({ ticket, getUserAvailability, priorityIcons }) => {
+// CustomTicketCard component to display individual tickets
+const CustomTicketCard = ({ ticket, getUserAvailability, priorityIcons, data }) => {
+  const { userId, title, priority, tag } = ticket;
+  const user = data.users.find((user) => user.id === userId);
+  const username = user ? user.name : "No Name";
+
   return (
     <Paper style={{ padding: "8px" }}>
       <div
@@ -33,8 +38,9 @@ const CustomTicketCard = ({ ticket, getUserAvailability, priorityIcons }) => {
             {ticket.id}
           </p>
           <ProfileIcon
-            userId={ticket.userId}
+            userId={userId}
             getUserAvailability={getUserAvailability}
+            username={username}
           />
         </div>
         <p
@@ -45,7 +51,7 @@ const CustomTicketCard = ({ ticket, getUserAvailability, priorityIcons }) => {
             marginBottom: "1rem",
           }}
         >
-          {ticket.title}
+          {title}
         </p>
         <div
           style={{
@@ -53,8 +59,8 @@ const CustomTicketCard = ({ ticket, getUserAvailability, priorityIcons }) => {
             alignItems: "center",
           }}
         >
-          {priorityIcons[ticket.priority]}
-          <FeatureRequest tag={ticket.tag[0]} />
+          {priorityIcons[priority]}
+          <FeatureRequest tag={tag[0]} />
         </div>
       </div>
     </Paper>
@@ -67,6 +73,7 @@ const CustomLabel = styled("label")({
   padding: "0px",
 });
 
+// GroupStatus component to display grouped tickets based on their status
 const GroupStatus = ({
   data,
   groupedTickets_status,
@@ -75,9 +82,14 @@ const GroupStatus = ({
   priorityLabels,
   statusValues,
 }) => {
+  // Get the availability of a user by their userId
   const getUserAvailability = (userId) => {
     const user = data.users.find((user) => user.id === userId);
-    return user?.available || false;
+
+    // Return user details or fallback if user is not found
+    return user
+      ? { name: user.name, available: user.available }
+      : { name: "N/A", available: false }; // Default to "N/A" if user not found
   };
 
   return (
@@ -120,10 +132,12 @@ const GroupStatus = ({
             {groupedTickets_status[status]
               ? groupedTickets_status[status].map((ticket) => (
                   <li key={ticket.id} style={{ marginBottom: "8px" }}>
+                    {/* Pass data and other necessary props to CustomTicketCard */}
                     <CustomTicketCard
                       ticket={ticket}
                       getUserAvailability={getUserAvailability}
                       priorityIcons={priorityIcons}
+                      data={data} // Pass the full data object to CustomTicketCard
                     />
                   </li>
                 ))

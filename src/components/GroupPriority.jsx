@@ -13,7 +13,9 @@ const CustomLabel = styled("label")({
   padding: "0px",
 });
 
-const CustomTicketCard = ({ ticket, getUserAvailability, statusIcons }) => {
+const CustomTicketCard = ({ ticket, getUserAvailability, statusIcons, username }) => {
+  const { userId } = ticket;
+
   return (
     <Paper style={{ padding: "8px" }}>
       <div
@@ -40,8 +42,9 @@ const CustomTicketCard = ({ ticket, getUserAvailability, statusIcons }) => {
             {ticket.id}
           </p>
           <ProfileIcon
-            userId={ticket.userId}
+            userId={userId}
             getUserAvailability={getUserAvailability}
+            username={username || "No Name"} // Fallback to "No Name"
           />
         </div>
         <div
@@ -125,15 +128,22 @@ const GroupPriority = ({
           </div>
           <ul style={{ listStyleType: "none", padding: 0 }}>
             {groupedTickets_priority[priority]
-              ? groupedTickets_priority[priority].map((ticket) => (
-                  <li key={ticket.id} style={{ marginBottom: "8px" }}>
-                    <CustomTicketCard
-                      ticket={ticket}
-                      statusIcons={statusIcons}
-                      getUserAvailability={getUserAvailability}
-                    />
-                  </li>
-                ))
+              ? groupedTickets_priority[priority].map((ticket) => {
+                  // Fetch the user name based on userId
+                  const user = data.users.find((user) => user.id === ticket.userId);
+                  const username = user ? user.name : "Unknown";
+
+                  return (
+                    <li key={ticket.id} style={{ marginBottom: "8px" }}>
+                      <CustomTicketCard
+                        ticket={ticket}
+                        statusIcons={statusIcons}
+                        getUserAvailability={getUserAvailability}
+                        username={username} // Pass username to CustomTicketCard
+                      />
+                    </li>
+                  );
+                })
               : null}
           </ul>
         </Grid>
