@@ -7,11 +7,11 @@ import TicketGroupPriority from "./GroupPriority";
 import GroupStatus from "./GroupStatus";
 import GroupUser from "./GroupUser";
 
-import inProgressIcon from "../assets/progress.png";
-import backlogIcon from "../assets/backlog.png";
-import cancelIcon from "../assets/cancel.png";
-import doneIcon from "../assets/done.png";
-import todoIcon from "../assets/darkroming.png";
+import inProgressIcon from "../assets/in-progress.svg";
+import backlogIcon from "../assets/Backlog.svg";
+import cancelIcon from "../assets/Cancelled.svg";
+import doneIcon from "../assets/Done.svg";
+import todoIcon from "../assets/To-do.svg";
 
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
